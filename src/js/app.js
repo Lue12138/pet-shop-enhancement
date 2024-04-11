@@ -112,32 +112,31 @@ App = {
 
   // Function to track the most adopted breed
   trackMostAdoptedBreed: function() {
-    var breedsCount = {}; // Object to store the count of each breed
-    var mostAdoptedBreed = ""; // Variable to store the most adopted breed
-    var maxCount = 0; // Variable to store the maximum count
+    var breedsCount = {};
+    var mostAdoptedBreed = "";
+    var maxCount = 0;
 
-    // Loop through the pets data to count the occurrences of each breed
+    // Count the occurrences of each breed
     for (var i = 0; i < App.petsData.length; i++) {
-      if (App.petsData[i].adopted != 'Yes'){
-        continue
-      }
+      if (App.petsData[i].adopted !== 'Yes') continue;
       var breed = App.petsData[i].breed;
 
-      if (breed in breedsCount){
-        breedsCount[breed] = breedsCount[breed] + 1;
-      }
-      else {
-        breedsCount[breed] = 1
-      }
+      breedsCount[breed] = (breedsCount[breed] || 0) + 1;
 
       if (breedsCount[breed] > maxCount) {
         maxCount = breedsCount[breed];
         mostAdoptedBreed = breed;
+      } else if (breedsCount[breed] === maxCount) {
+        // multiple winners!
+        if (!mostAdoptedBreed.includes(breed)) {
+          mostAdoptedBreed += mostAdoptedBreed ? ', ' + breed : breed;
+        }
       }
-      else if (breedsCount[breed] == maxCount) {
-        mostAdoptedBreed =  mostAdoptedBreed + ', ' + breed
-      }
+    }
 
+    // If no pets are adopted, set a message to indicate this
+    if (maxCount === 0) {
+      return "There is currently no pet adopted :(";
     }
 
     return mostAdoptedBreed;
