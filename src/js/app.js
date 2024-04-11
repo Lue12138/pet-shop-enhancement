@@ -5,6 +5,7 @@ App = {
   init: async function() {
     // Load pets.
     $.getJSON('../pets.json', function(data) {
+      App.petsData = data;
       var petsRow = $('#petsRow');
       var petTemplate = $('#petTemplate');
 
@@ -84,17 +85,53 @@ App = {
         if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
           // change adopt status and buttons accordingly for adopted pets
           $('.panel-pet').eq(i).find('.btn-adopt').text('Success').attr('disabled', true);
-          $('.panel-pet').eq(i).find('.adoption-status').text('Yes');
           $(".panel-pet").eq(i).find(".btn-return").css("display", "inline-block");
+          $('.panel-pet').eq(i).find('.adoption-status').text('Yes');
+          App.petsData[i].adopted = 'Yes'
         } else {
           $(".panel-pet").eq(i).find(".btn-adopt").text("Adopt").attr("disabled", false);
           $(".panel-pet").eq(i).find(".btn-return").css("display", "none");
           $('.panel-pet').eq(i).find('.adoption-status').text('No');
+          App.petsData[i].adopted = 'No'
         }
       }
+      document.getElementById('most-adopted-breed').innerHTML = App.trackMostAdoptedBreed();
     }).catch(function(err) {
       console.log(err.message);
     });
+  },
+
+  // Function to track the most adopted breed
+  trackMostAdoptedBreed: function() {
+    var breedsCount = {}; // Object to store the count of each breed
+    var mostAdoptedBreed = ""; // Variable to store the most adopted breed
+    var maxCount = 0; // Variable to store the maximum count
+
+    // Loop through the pets data to count the occurrences of each breed
+    for (var i = 0; i < App.petsData.length; i++) {
+      if (App.petsData[i].adopted != 'Yes'){
+        continue
+      }
+      var breed = App.petsData[i].breed;
+
+      if (breed in breedsCount){
+        breedsCount[breed] = breedsCount[breed] + 1;
+      }
+      else {
+        breedsCount[breed] = 1
+      }
+
+      if (breedsCount[breed] > maxCount) {
+        maxCount = breedsCount[breed];
+        mostAdoptedBreed = breed;
+      }
+      else if (breedsCount[breed] == maxCount) {
+        mostAdoptedBreed =  mostAdoptedBreed + ', ' + breed
+      }
+
+    }
+
+    return mostAdoptedBreed;
   },
 
   handleReturn: function (event) {
