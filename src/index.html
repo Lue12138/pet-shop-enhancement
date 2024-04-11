@@ -26,6 +26,14 @@
           <br/>
         </div>
       </div>
+      <div class="menu">
+        <select id="filterDropdown" onchange="filterChanged()">
+          <option value="" >---Select the filter you want to apply---</option>
+          <option value="adopted">Adopted</option>
+          <option value="available">Available for Adoption</option>
+        </select>
+        
+      </div>
 
       <div id="petsRow" class="row">
         <!-- PETS LOAD HERE -->
@@ -33,7 +41,7 @@
     </div>
 
     <div id="petTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="col-sm-6 col-md-4 col-lg-3 div-pet">
         <div class="panel panel-default panel-pet">
           <div class="panel-heading">
             <h3 class="panel-title">Scrappy</h3>
@@ -43,7 +51,8 @@
             <br/><br/>
             <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br/>
             <strong>Age</strong>: <span class="pet-age">3</span><br/>
-            <strong>Location</strong>: <span class="pet-location">Warren, MI</span><br/><br/>
+            <strong>Location</strong>: <span class="pet-location">Null</span><br/>
+            <strong>Adopted</strong>: <span class="adoption-status">No</span><br/><br/>
             <button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button>
           </div>
         </div>

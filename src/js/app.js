@@ -15,6 +15,7 @@ App = {
         petTemplate.find('.pet-age').text(data[i].age);
         petTemplate.find('.pet-location').text(data[i].location);
         petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+        petTemplate.find('.adoption-status').text(data[i].adopted);
 
         petsRow.append(petTemplate.html());
       }
@@ -26,25 +27,25 @@ App = {
   initWeb3: async function() {
 
     // Modern dapp browsers...
-if (window.ethereum) {
-  App.web3Provider = window.ethereum;
-  try {
-    // Request account access
-    await window.ethereum.enable();
-  } catch (error) {
-    // User denied account access...
-    console.error("User denied account access")
-  }
-}
-// Legacy dapp browsers...
-else if (window.web3) {
-  App.web3Provider = window.web3.currentProvider;
-}
-// If no injected web3 instance is detected, fall back to Ganache
-else {
-  App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-}
-web3 = new Web3(App.web3Provider);
+    if (window.ethereum) {
+      App.web3Provider = window.ethereum;
+      try {
+        // Request account access
+        await window.ethereum.enable();
+      } catch (error) {
+        // User denied account access...
+        console.error("User denied account access")
+      }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      App.web3Provider = window.web3.currentProvider;
+    }
+    // If no injected web3 instance is detected, fall back to Ganache
+    else {
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    }
+    web3 = new Web3(App.web3Provider);
 
     return App.initContract();
   },
@@ -61,7 +62,7 @@ web3 = new Web3(App.web3Provider);
       // Use our contract to retrieve and mark the adopted pets
       return App.markAdopted();
     });
-
+    
     return App.bindEvents();
   },
 
@@ -69,7 +70,7 @@ web3 = new Web3(App.web3Provider);
     $(document).on('click', '.btn-adopt', App.handleAdopt);
   },
 
-  markAdopted: function(adopters, account) {
+  markAdopted: function() {
     var adoptionInstance;
 
     App.contracts.Adoption.deployed().then(function(instance) {
@@ -79,7 +80,9 @@ web3 = new Web3(App.web3Provider);
     }).then(function(adopters) {
       for (i = 0; i < adopters.length; i++) {
         if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
+          // change adopt status and buttons accordingly for adopted pets
           $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+          $('.panel-pet').eq(i).find('.adoption-status').text('Yes');
         }
       }
     }).catch(function(err) {
@@ -121,3 +124,25 @@ $(function() {
     App.init();
   });
 });
+
+function filterChanged(){
+  const filterDropdown = document.getElementById('filterDropdown');
+  const selectedValue = filterDropdown.value;
+  const pets = document.querySelectorAll('#petsRow .div-pet');
+  console.log(pets[0].querySelector('.panel-title'));
+
+  for (let i = 0; i < pets.length; i++){
+    // get current pet's adoption status
+    let pet = pets[i];
+    let adoptionStatus = pet.querySelector('.adoption-status');
+
+    // if clients wants to see ones available and this pet's Adopted == Yes, hide it
+    if (selectedValue==='available' && adoptionStatus.textContent ==='Yes'){
+      pet.style.display = 'none';
+    } else if (selectedValue ==='adopted' && adoptionStatus.textContent === 'No'){
+      pet.style.display = 'none';
+    } else{
+      pet.style.display = 'flex';
+    }
+  };
+};
