@@ -27,12 +27,18 @@
         </div>
       </div>
       <div class="menu">
-        <select id="filterDropdown" onchange="filterChanged()">
+        <select id="adoptionStatusDropdown" onchange="filterChanged()">
           <option value="" >---Select the filter you want to apply---</option>
           <option value="adopted">Adopted</option>
           <option value="available">Available for Adoption</option>
         </select>
-        
+        <select id="breedDropdown" onchange="filterChanged()">
+          <option value="">---Select Breed---</option>
+          <option value="Scottish Terrier">Scottish Terrier</option>
+          <option value="French Bulldog">French Bulldog</option>
+          <option value="Boxer">Boxer</option>
+          <option value="Golden Retriever">Golden Retriever</option>
+        </select>
       </div>
 
       <div id="petsRow" class="row">

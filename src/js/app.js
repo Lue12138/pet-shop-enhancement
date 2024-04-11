@@ -125,24 +125,25 @@ $(function() {
   });
 });
 
-function filterChanged(){
-  const filterDropdown = document.getElementById('filterDropdown');
-  const selectedValue = filterDropdown.value;
+function filterChanged() {
+  const adoptionStatus = document.getElementById('adoptionStatusDropdown').value;
+  const selectedBreed = document.getElementById('breedDropdown').value;
+
   const pets = document.querySelectorAll('#petsRow .div-pet');
-  console.log(pets[0].querySelector('.panel-title'));
 
-  for (let i = 0; i < pets.length; i++){
-    // get current pet's adoption status
-    let pet = pets[i];
-    let adoptionStatus = pet.querySelector('.adoption-status');
+  pets.forEach(pet => {
+    const adoptionStatusText = pet.querySelector('.adoption-status').textContent;
+    const breedText = pet.querySelector('.pet-breed').textContent;
 
-    // if clients wants to see ones available and this pet's Adopted == Yes, hide it
-    if (selectedValue==='available' && adoptionStatus.textContent ==='Yes'){
-      pet.style.display = 'none';
-    } else if (selectedValue ==='adopted' && adoptionStatus.textContent === 'No'){
-      pet.style.display = 'none';
-    } else{
-      pet.style.display = 'flex';
+    let matchesFilter = true;
+
+    if (adoptionStatus && (adoptionStatus === 'available' && adoptionStatusText === 'Yes' || adoptionStatus === 'adopted' && adoptionStatusText === 'No')) {
+      matchesFilter = false;
     }
-  };
+    if (selectedBreed && selectedBreed !== breedText) {
+      matchesFilter = false;
+    }
+
+    pet.style.display = matchesFilter ? 'flex' : 'none';
+  });
 };
