@@ -75,6 +75,13 @@ App = {
 
   markAdopted: function() {
     var adoptionInstance;
+    // Abbreviate address for display
+    function abbreviateAddress(address) {
+      if (address.length <= 10) {
+        return address;
+      }
+      return address.slice(0, 6) + '...' + address.slice(-4);
+    }
 
     App.contracts.Adoption.deployed().then(function(instance) {
       adoptionInstance = instance;
@@ -87,11 +94,13 @@ App = {
           $('.panel-pet').eq(i).find('.btn-adopt').text('Success').attr('disabled', true);
           $(".panel-pet").eq(i).find(".btn-return").css("display", "inline-block");
           $('.panel-pet').eq(i).find('.adoption-status').text('Yes');
+          $('.panel-pet').eq(i).find('.pet-owner').text(abbreviateAddress(adopters[i]));
           App.petsData[i].adopted = 'Yes'
         } else {
           $(".panel-pet").eq(i).find(".btn-adopt").text("Adopt").attr("disabled", false);
           $(".panel-pet").eq(i).find(".btn-return").css("display", "none");
           $('.panel-pet').eq(i).find('.adoption-status').text('No');
+          $('.panel-pet').eq(i).find('.pet-owner').text('None');
           App.petsData[i].adopted = 'No'
         }
       }
